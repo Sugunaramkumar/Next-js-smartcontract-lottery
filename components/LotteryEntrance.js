@@ -6,7 +6,7 @@ import { ethers } from "ethers"
 import { useNotification } from "web3uikit"
 
 export default function LotteryEntrance() {
-    const { chainId: chainIdHex, isWeb3enabled } = useMoralis()
+    const { chainId: chainIdHex, isWeb3Enabled } = useMoralis()
     const chainId = parseInt(chainIdHex)
     const raffleAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null
     const [entranceFee, setEntranceFee] = useState("0")
@@ -28,7 +28,7 @@ export default function LotteryEntrance() {
     })
 
     useEffect(() => {
-        if (isWeb3enabled) {
+        if (isWeb3Enabled) {
             //try to read the raffle entrance fee
             async function updateUI() {
                 const entranceFeeFromCall = (await getEntranceFee()).toString()
@@ -36,7 +36,7 @@ export default function LotteryEntrance() {
             }
             updateUI()
         }
-    }, [isWeb3enabled])
+    }, [isWeb3Enabled])
     return (
         <div>
             Hello from LotteryEntrance!
