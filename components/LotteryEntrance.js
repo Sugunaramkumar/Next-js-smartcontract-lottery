@@ -45,7 +45,7 @@ export default function LotteryEntrance() {
                     <button
                         onClick={async function () {
                             await enterRaffle({
-                                onSuccess: handleSuccess,
+                                onComplete: handleSuccess, onError: (error) => console.log(error)
                             })
                         }}
                     >
