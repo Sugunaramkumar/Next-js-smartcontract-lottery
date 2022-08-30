@@ -6,7 +6,7 @@ import { ethers } from "ethers"
 import { useNotification } from "web3uikit"
 
 export default function LotteryEntrance() {
-    const { chainId: chainIdHex, isWeb3enabled } = useMoralis()
+    const { Moralis, chainId: chainIdHex, isWeb3Enabled } = useMoralis()
     const chainId = parseInt(chainIdHex)
     const raffleAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null
     const [entranceFee, setEntranceFee] = useState("0")
@@ -28,15 +28,26 @@ export default function LotteryEntrance() {
     })
 
     useEffect(() => {
-        if (isWeb3enabled) {
+        if (isWeb3Enabled) {
             //try to read the raffle entrance fee
             async function updateUI() {
-                const entranceFeeFromCall = (await getEntranceFee()).toString()
-                setEntranceFee(ethers.utils.formatUnits(entranceFeeFromCall, "ether"))
+                // const entranceFeeFromCall = (await getEntranceFee()).toString()
+                // setEntranceFee(entranceFeeFromCall)
+                const options = { abi, contractAddress: raffleAddress }
+                const fee = await Moralis.executeFunction({
+                    functionName: "getEntranceFee",
+                    ...options,
+                })
             }
             updateUI()
         }
-    }, [isWeb3enabled])
+    }, [isWeb3Enabled])
+
+    const handleSuccess = async function (transaction) {
+        await transaction
+        updateUI()
+    }
+
     return (
         <div>
             Hello from LotteryEntrance!
@@ -45,7 +56,8 @@ export default function LotteryEntrance() {
                     <button
                         onClick={async function () {
                             await enterRaffle({
-                                onSuccess: handleSuccess,
+                                onComplete: handleSuccess,
+                                onError: (error) => console.log(error),
                             })
                         }}
                     >
