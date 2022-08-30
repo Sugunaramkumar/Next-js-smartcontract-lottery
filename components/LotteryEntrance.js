@@ -32,7 +32,7 @@ export default function LotteryEntrance() {
             //try to read the raffle entrance fee
             async function updateUI() {
                 const entranceFeeFromCall = (await getEntranceFee()).toString()
-                setEntranceFee(ethers.utils.formatUnits(entranceFeeFromCall, "ether"))
+                setEntranceFee(entranceFeeFromCall)
             }
             updateUI()
         }
